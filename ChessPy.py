@@ -1,60 +1,14 @@
+from Pieces import *
+
 import sys
 import os
-
-class Piece(object):
-    def __init__(self, position, color):
-        self.position = position
-        self.color = color
-
-    def __str__(self) -> str:
-        return self.color
-    
-class Pawn(Piece):
-    def __init__(self, position, color):
-        super().__init__(position, color)
-
-    def __str__(self) -> str:
-        return 'Pawn ' + super().__str__()
-
-class Rook(Piece):
-    def __init__(self, position, color):
-        super().__init__(position, color)
-
-    def __str__(self) -> str:
-        return 'Rook ' + super().__str__()
-
-class Knight(Piece):
-    def __init__(self, position, color):
-        super().__init__(position, color)
-
-    def __str__(self) -> str:
-        return 'Knight '+ super().__str__()
-
-class Bishop(Piece):
-    def __init__(self, position, color):
-        super().__init__(position, color)
-
-    def __str__(self) -> str:
-        return 'Bishop ' + super().__str__()
-    
-class Queen(Piece):
-    def __init__(self, position, color):
-        super().__init__(position, color)
-    
-    def __str__(self) -> str:
-        return 'Queen ' + super().__str__()
-
-class King(Piece):
-    def __init__(self, position, color):
-        super().__init__(position, color)
-              
-    def __str__(self) -> str:
-        return 'King ' + super().__str__()
+import re
 
 class Board:
     def __init__(self):
         self.board = [[0 for _ in range(8)] for _ in range(8)] 
         self.init() 
+        self.turn = 0
 
     def init(self):
         self.board[0][0] = Rook((0, 0), 'Black')
@@ -79,9 +33,13 @@ class Board:
             self.board[1][col] = Pawn((1, col), 'Black')
             self.board[6][col] = Pawn((6, col), 'White')
 
+    def nextTurn(self):
+        self.turn = 1 - self.turn
+
+    def getTurn(self):
+        return self.turn
 
 def displayGame(board):
-    print("   a b c d e f g h")
     print("  -----------------")
     for i in range(8):
         row_str = str(8 - i) + " |"
@@ -119,6 +77,9 @@ def displayGame(board):
                     row_str += "♔|"    
         print(row_str)
     print("  ----------------")
+    print("   a b c d e f g h")
+
+
 
 def clean():
     try:
@@ -133,17 +94,55 @@ def clean():
     except:
         pass
 
+
+def translateLetter(steps):
+    if(len(steps) == 2):
+        newcoordenates = []
+        coordenates1 = steps[0] 
+        coordenates2 = steps[1]
+        letter1 = coordenates1[0]
+        letter2 = coordenates2[0]
+        if(letter1.isalpha() and letter2.isalpha()):
+            number1 = ord(letter1) - 96
+            number2 = ord(letter2) - 96
+            x = str(number1) + coordenates1[1]
+            y = str(number2) + coordenates2[1]
+            newcoordenates.append(x)
+            newcoordenates.append(y)
+            print(x)
+            print(y)
+            return newcoordenates
+        else:   
+            print("Please first the letter then the number.")
+            return
+        
 def GameOver():
     return False
 
+
+
 def game():
+    steps = []
     board = Board()
     board.init()
     print("Write the coordenates of your piece, then the coordenates for where it would be. \nExample: e2 e4")
     displayGame(board=board)
+    turn = 0
     while not GameOver():
-        break
-        displayGame(board)
+        step = input()
+        steps = re.findall(r"[\w]+", step)
+        if(len(steps) == 2):
+            if(not board.getTurn()):
+                translateLetter(steps)   
+            elif(board.getTurn()):
+                translateLetter(steps)
+            else:
+                print("Error: Turn")
+        else:
+            clean()
+            print("Coordenates not recognized, try again.")
+            displayGame(board=board)
+        
 
 
 def main(): 
