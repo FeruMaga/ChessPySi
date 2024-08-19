@@ -38,6 +38,14 @@ class Board:
 
     def getTurn(self):
         return self.turn
+    
+    def getPiece(self, coordinates):
+        y = coordinates[0]
+        print(y)
+        x = coordinates[1]
+        print(x)
+        piece = self.board[int(x)][int(y)]
+        print(piece)
 
 def displayGame(board):
     print("  -----------------")
@@ -96,26 +104,34 @@ def clean():
 
 
 def translateLetter(steps):
-    if(len(steps) == 2):
-        newcoordenates = []
-        coordenates1 = steps[0] 
-        coordenates2 = steps[1]
-        letter1 = coordenates1[0]
-        letter2 = coordenates2[0]
-        if(letter1.isalpha() and letter2.isalpha()):
-            number1 = ord(letter1) - 96
-            number2 = ord(letter2) - 96
-            x = str(number1) + coordenates1[1]
-            y = str(number2) + coordenates2[1]
-            newcoordenates.append(x)
-            newcoordenates.append(y)
-            print(x)
-            print(y)
-            return newcoordenates
-        else:   
-            print("Please first the letter then the number.")
-            return
+    if len(steps) == 2 and steps[0][1].isnumeric() and steps[1][1].isnumeric() and steps[0][0].isalpha() and steps[1][0].isalpha():
+        currentStateLetter = int(ord(steps[0][0]) - 96) - 1
+        currentStateNumber = int(steps[0][1]) - 1 
+        newMoveLetter =  int(ord(steps[1][0]) - 96) - 1
+        newMoveNumber = int(steps[1][1]) -1
+        try:
+            if currentStateLetter < 8 and  currentStateNumber < 8 and newMoveLetter < 8 and newMoveNumber < 8:
+                newcoordinates = [
+                    str(currentStateLetter) + str(currentStateNumber),
+                    str(newMoveLetter) + str(newMoveNumber),
+                ]
+                return newcoordinates
+            else:
+                print("Coordinates out of range, please provide valid coordinates.")
+        except IndexError:
+            print("Please provide valid coordinates.")
+    else:   
+        print("Coordinates not recognized, try again.")
         
+
+def move(board, steps):
+    currentState = steps[0]
+    newMove = steps[1]
+    board.getPiece(currentState)
+
+
+
+
 def GameOver():
     return False
 
@@ -126,16 +142,18 @@ def game():
     board = Board()
     board.init()
     print("Write the coordenates of your piece, then the coordenates for where it would be. \nExample: e2 e4")
-    displayGame(board=board)
+    displayGame(board)
     turn = 0
     while not GameOver():
         step = input()
         steps = re.findall(r"[\w]+", step)
         if(len(steps) == 2):
             if(not board.getTurn()):
-                translateLetter(steps)   
+                steps = translateLetter(steps) 
+                move(board, steps)  
             elif(board.getTurn()):
-                translateLetter(steps)
+                steps = translateLetter(steps)
+                move(board, steps)
             else:
                 print("Error: Turn")
         else:
