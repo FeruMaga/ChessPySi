@@ -11,27 +11,27 @@ class Board:
         self.turn = 0
 
     def init(self):
-        self.board[0][0] = Rook((0, 0), 'Black')
-        self.board[0][1] = Knight((0, 1), 'Black')
-        self.board[0][2] = Bishop((0, 2), 'Black')
-        self.board[0][3] = Queen((0, 3), 'Black')
-        self.board[0][4] = King((0, 4), 'Black')
-        self.board[0][5] = Bishop((0, 5), 'Black')
-        self.board[0][6] = Knight((0, 6), 'Black')
-        self.board[0][7] = Rook((0, 7), 'Black')
+        self.board[0][0] = Rook((0, 0), 'White')
+        self.board[0][1] = Knight((0, 1), 'White')
+        self.board[0][2] = Bishop((0, 2), 'White')
+        self.board[0][3] = Queen((0, 3), 'White')
+        self.board[0][4] = King((0, 4), 'White')
+        self.board[0][5] = Bishop((0, 5), 'White')
+        self.board[0][6] = Knight((0, 6), 'White')
+        self.board[0][7] = Rook((0, 7), 'White')
 
-        self.board[7][0] = Rook((7, 0), 'White')
-        self.board[7][1] = Knight((7, 1), 'White')
-        self.board[7][2] = Bishop((7, 2), 'White')
-        self.board[7][3] = Queen((7, 3), 'White')
-        self.board[7][4] = King((7, 4), 'White')
-        self.board[7][5] = Bishop((7, 5), 'White')
-        self.board[7][6] = Knight((7, 6), 'White')
-        self.board[7][7] = Rook((7, 7), 'White')
+        self.board[7][0] = Rook((7, 0), 'Black')
+        self.board[7][1] = Knight((7, 1), 'Black')
+        self.board[7][2] = Bishop((7, 2), 'Black')
+        self.board[7][3] = Queen((7, 3), 'Black')
+        self.board[7][4] = King((7, 4), 'Black')
+        self.board[7][5] = Bishop((7, 5), 'Black')
+        self.board[7][6] = Knight((7, 6), 'Black')
+        self.board[7][7] = Rook((7, 7), 'Black')
 
         for col in range(8):
-            self.board[1][col] = Pawn((1, col), 'Black')
-            self.board[6][col] = Pawn((6, col), 'White')
+            self.board[1][col] = Pawn((1, col), 'White')
+            self.board[6][col] = Pawn((6, col), 'Black')
 
     def nextTurn(self):
         self.turn = 1 - self.turn
@@ -45,7 +45,11 @@ class Board:
         x = coordinates[1]
         print(x)
         piece = self.board[int(x)][int(y)]
-        print(piece)
+        if piece != None:
+            print(piece)
+            return piece
+
+        return None
 
 def displayGame(board):
     print("  -----------------")
@@ -112,8 +116,8 @@ def translateLetter(steps):
         try:
             if currentStateLetter < 8 and  currentStateNumber < 8 and newMoveLetter < 8 and newMoveNumber < 8:
                 newcoordinates = [
-                    str(currentStateLetter) + str(currentStateNumber),
-                    str(newMoveLetter) + str(newMoveNumber),
+                    currentStateLetter, currentStateNumber,
+                    newMoveLetter, newMoveNumber,
                 ]
                 return newcoordinates
             else:
@@ -125,10 +129,15 @@ def translateLetter(steps):
         
 
 def move(board, steps):
-    currentState = steps[0]
-    newMove = steps[1]
-    board.getPiece(currentState)
-
+    currentState = steps[0:2]
+    newMove = steps[2:4]
+    print(currentState)
+    print(newMove)
+    piece = board.getPiece(currentState)
+    if piece.possibleMove(newMove):
+        print("Yes")
+    else:
+        print("No")
 
 
 
