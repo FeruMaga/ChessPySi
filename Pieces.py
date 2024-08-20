@@ -8,7 +8,14 @@ class Piece(object):
         return self.color
     
     def getPosition(self):
-        return position
+        return self.position
+    
+    def updateMove(self, coordinates):
+        self.position = coordinates
+
+    def captured(self):
+        self.position = None
+
 
 class Pawn(Piece):
     def __init__(self, position, color):
@@ -19,9 +26,7 @@ class Pawn(Piece):
 
     def possibleMove(self, positions):
         y, x = self.position
-        print(self.position)
         newX, newY = positions
-        print(positions)
 
         if self.color == 'White':
             if newX == x and newY == y + 1:
