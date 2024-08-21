@@ -1,70 +1,15 @@
+from Board import *
 from Pieces import *
 
 import sys
 import os
 import re
 
-class Board:
-    def __init__(self):
-        self.board = [[0 for _ in range(8)] for _ in range(8)] 
-        self.init() 
-        self.turn = 0
-
-    def init(self):
-        self.board[0][0] = Rook((0, 0), 'White')
-        self.board[0][1] = Knight((0, 1), 'White')
-        self.board[0][2] = Bishop((0, 2), 'White')
-        self.board[0][3] = Queen((0, 3), 'White')
-        self.board[0][4] = King((0, 4), 'White')
-        self.board[0][5] = Bishop((0, 5), 'White')
-        self.board[0][6] = Knight((0, 6), 'White')
-        self.board[0][7] = Rook((0, 7), 'White')
-
-        self.board[7][0] = Rook((7, 0), 'Black')
-        self.board[7][1] = Knight((7, 1), 'Black')
-        self.board[7][2] = Bishop((7, 2), 'Black')
-        self.board[7][3] = Queen((7, 3), 'Black')
-        self.board[7][4] = King((7, 4), 'Black')
-        self.board[7][5] = Bishop((7, 5), 'Black')
-        self.board[7][6] = Knight((7, 6), 'Black')
-        self.board[7][7] = Rook((7, 7), 'Black')
-
-        for col in range(8):
-            self.board[1][col] = Pawn((1, col), 'White')
-            self.board[6][col] = Pawn((6, col), 'Black')
-
-    # White Turn = 0
-    # Black Turn = 1
-    def nextTurn(self):
-        self.turn = 1 - self.turn
-
-    def getTurn(self):
-        return self.turn
-    
-    def getPiece(self, coordinates):
-        y = coordinates[0]
-        x = coordinates[1]
-        piece = self.board[int(x)][int(y)]
-        if piece != None:
-            print(piece)
-            return piece
-
-        return None
-    
-    def updateMove(self, piece, newMove):
-        oldPosition = piece.getPosition()
-        print(oldPosition)
-        self.board[oldPosition[0]][oldPosition[1]] = 0
-        piece.updateMove(newMove)
-        print(newMove)
-        self.board[newMove[1]][newMove[0]] = piece
-
-    def capture(self, piece):
-        position = piece.getPosition()
-        piece.captured()
-        self.board[position[1]][position[0]] = 0
 
 def displayGame(board):
+
+    displayCapture(board)
+
     print("  -----------------")
     for i in range(8):
         row_str = str(8 - i) + " |"
@@ -104,6 +49,44 @@ def displayGame(board):
     print("  ----------------")
     print("   a b c d e f g h")
 
+def displayCapture(board):
+        rowWhitePiece = ""
+        rowBlackPiece = ""
+
+        if board.blackCapture or board.whiteCapture:
+            print("White captures: ")
+            if board.whiteCapture:
+                for piece in board.whiteCapture:
+                    if piece.__str__() == 'Pawn Black':
+                        rowBlackPiece += " ♙"
+                    elif piece.__str__() == 'Rook Black':
+                        rowBlackPiece += " ♖"
+                    elif piece.__str__() == 'Knight Black':
+                        rowBlackPiece += " ♘"    
+                    elif piece.__str__() == 'Bishop Black':
+                        rowBlackPiece += " ♗"    
+                    elif piece.__str__() == 'Queen Black':
+                        rowBlackPiece += " ♕"    
+                    elif piece.__str__() == 'King Black':
+                        rowBlackPiece += " ♔"    
+            print(rowBlackPiece)
+            print("Black captures: ")
+            if board.blackCapture:
+                for piece in board.blackCapture:
+                    if piece.__str__() == 'Pawn White':
+                        rowWhitePiece += "♟|"
+                    elif piece.__str__() == 'Rook White':
+                        rowWhitePiece += "♜|"
+                    elif piece.__str__() == 'Knight White':
+                        rowWhitePiece += "♞|"
+                    elif piece.__str__() == 'Bishop White':
+                        rowWhitePiece += "♝|"  
+                    elif piece.__str__() == 'Queen White':
+                        rowWhitePiece += "♛|"
+                    elif piece.__str__() == 'King White':
+                        rowWhitePiece += "♚|"
+
+            print(rowWhitePiece)
 
 
 def clean():
@@ -122,15 +105,17 @@ def clean():
 
 def translateLetter(steps):
     if len(steps) == 2 and steps[0][1].isnumeric() and steps[1][1].isnumeric() and steps[0][0].isalpha() and steps[1][0].isalpha():
-        currentStateLetter = int(ord(steps[0][0]) - 96) - 1
+        currentLetterLower =  steps[0][0].lower()
+        newMoveLetterLower = steps[1][0].lower()
+        currentStateLetter = int(ord(currentLetterLower) - 96) - 1
         currentStateNumber = int(steps[0][1]) - 1 
-        newMoveLetter =  int(ord(steps[1][0]) - 96) - 1
+        newMoveLetter =  int(ord(newMoveLetterLower) - 96) - 1
         newMoveNumber = int(steps[1][1]) -1
         try:
             if currentStateLetter < 8 and  currentStateNumber < 8 and newMoveLetter < 8 and newMoveNumber < 8:
                 newcoordinates = [
-                    currentStateLetter, currentStateNumber,
-                    newMoveLetter, newMoveNumber,
+                    currentStateNumber,currentStateLetter,
+                    newMoveNumber,newMoveLetter
                 ]
                 return newcoordinates
             else:
@@ -167,17 +152,18 @@ def GameOver():
 def game():
     steps = []
     board = Board()
-    board.init()
     print("Write the coordenates of your piece, then the coordenates for where it would be. \nExample: e2 e4")
     print("If want to exit, write 0.")
     
     turn = 0
     while not GameOver():
 
+        clean()
+
         if board.getTurn() == 0:
-            print("White Turn!")
+            print("White Turn!\n")
         else:
-            print("Black Turn!")
+            print("Black Turn!\n")
 
         displayGame(board)
         
@@ -185,9 +171,9 @@ def game():
         steps = re.findall(r"[\w]+", step)
         
         if(len(steps) == 2):
-            steps = translateLetter(steps)
-            if steps:
-                move(board, steps)
+            stepsTranslated = translateLetter(steps)
+            if stepsTranslated:
+                move(board, stepsTranslated)
                 displayGame(board)
         elif step == '0':
             sys.exit()
@@ -227,17 +213,20 @@ def main():
 
         if choose == "1":
             print("Player vs Player choosed! ")
+            clean()
+            game()
             break
         elif choose == "2":
             print("Player vs AI choosed!")
+            clean()
+            game()
             break
         elif choose == "0":
             sys.exit()
         else: 
             print("\nThis option does not exist, try again.\n")
 
-    clean()
-    game()
+
 
 
 if __name__ == '__main__':

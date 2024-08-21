@@ -26,7 +26,7 @@ class Pawn(Piece):
 
     def possibleMove(self, positions):
         y, x = self.position
-        newX, newY = positions
+        newY, newX = positions
 
         if self.color == 'White':
             if newX == x and newY == y + 1:
@@ -55,7 +55,7 @@ class Rook(Piece):
     
     def possibleMove(self, positions):
         y, x = self.position
-        newX, newY = positions
+        newY, newX = positions
 
         if newX == x or newY == y:
             return True
@@ -71,7 +71,7 @@ class Knight(Piece):
     
     def possibleMove(self, positions):
         y, x = self.position
-        newX, newY = positions
+        newY, newX = positions
 
         if (newX == x + 1 and newY == y + 2) or (newX == x + 1 and newY == y - 2) \
         or (newX == x -1 and newY == y + 2) or (newX == x - 1 and newY == y - 2) \
@@ -91,7 +91,7 @@ class Bishop(Piece):
     
     def possibleMove(self, positions):
         y, x = self.position
-        newX, newY = positions
+        newY, newX = positions
 
         if abs(newX - x) == abs(newY - y):
             return True
@@ -107,7 +107,7 @@ class Queen(Piece):
     
     def possibleMove(self, positions):
         y, x = self.position
-        newX, newY = positions
+        newY, newX = positions
 
         if newX == x or newY == y or  abs(newX - x) == abs(newY - y):
             return True
@@ -123,7 +123,7 @@ class King(Piece):
     
     def possibleMove(self, positions):
         y, x = self.position
-        newX, newY = positions
+        newY, newX = positions
 
         if newX == x + 1 or newY == y + 1 or newX == x - 1 or newY == y - 1 or abs(newX - x) == abs(newY - y):
             return True
