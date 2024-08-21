@@ -144,7 +144,7 @@ def move(board, steps):
             print("This is not a possible move, try again.")
             return
 
-def GameOver():
+def GameOver(board):
     return False
 
 
@@ -156,7 +156,7 @@ def game():
     print("If want to exit, write 0.")
     
     turn = 0
-    while not GameOver():
+    while not GameOver(board):
 
         clean()
 
@@ -164,6 +164,9 @@ def game():
             print("White Turn!\n")
         else:
             print("Black Turn!\n")
+
+        if board.check():
+            print("Check !")
 
         displayGame(board)
         
@@ -175,6 +178,7 @@ def game():
             if stepsTranslated:
                 move(board, stepsTranslated)
                 displayGame(board)
+                
         elif step == '0':
             sys.exit()
         else:

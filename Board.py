@@ -49,6 +49,15 @@ class Board:
 
         return None
     
+    def getPieceByName(self, name):
+        for row in range(8):
+            for col in range(8):
+                if self.board[row][col].__str__() == name:
+                    piece = self.board[row][col]
+                    return piece
+                
+        return
+    
     def updateMove(self, piece, newMove):
         oldPosition = piece.getPosition()
         print("Update move board old positon:")
@@ -69,3 +78,34 @@ class Board:
             self.blackCapture.append(piece)
         elif piece.color == "Black":
             self.whiteCapture.append(piece)
+
+    def check(self):
+
+        turn = self.getTurn()
+
+        if turn == 1:
+            king = self.getPieceByName("King Black")
+            color = "White"
+        elif turn == 0:
+            king = self.getPieceByName("King White")
+            color = "Black"
+        else:
+            raise ValueError("Invalid turn value!")
+
+        if king is None:
+            raise ValueError(f"King not found on the board!")
+        
+        positionKing = king.position
+
+        print(positionKing)
+
+        for row in range(8):
+            for col in range(8):
+                piece = self.board[row][col]
+                
+                if piece and piece.color == color:
+                    if piece.possibleMove(positionKing):
+                        return True
+                
+        return False
+    
