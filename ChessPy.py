@@ -130,22 +130,40 @@ def move(board, steps):
     currentState = steps[0:2]
     newMove = steps[2:4]
     piece = board.getPiece(currentState)
+
+    if not piece:
+        print("No piece choosed!")
+        return 
+    
     if board.getTurn() and piece.color == "White" or not board.getTurn( ) and piece.color == "Black":
             print("It is not your turn!")
             return
-    else:
-        if piece.isPossibleMove(board, newMove):
-            pieceCapture = board.getPiece(newMove)
-            if pieceCapture:
-                board.capture(pieceCapture)
-            board.updateMove(piece, newMove)
-            board.nextTurn()
-        else:
-            print("This is not a possible move, try again.")
+    
+    if piece.isPossibleMove(board, newMove):
+
+        oldPosition = piece.getPosition()
+        pieceCapture = board.getPiece(newMove)
+        board.updateMove(piece, newMove)
+
+        if board.check():
+            print("Move results in check!")
+            board.updateMove(piece, oldPosition)
             return
+        
+        
+        if pieceCapture:
+            board.capture(pieceCapture)
+
+        board.nextTurn()
+    else:
+        print("This is not a possible move, try again.")
+        return
 
 def GameOver(board):
-    return False
+    if board.checkMate:
+        return True
+    else:
+        return False
 
 
 
@@ -157,8 +175,6 @@ def game():
     
     turn = 0
     while not GameOver(board):
-
-        clean()
 
         if board.getTurn() == 0:
             print("White Turn!\n")
@@ -175,6 +191,10 @@ def game():
             if stepsTranslated:
                 move(board, stepsTranslated)
                 displayGame(board)
+
+                if board.checkmate():
+                    print(f"Checkmate! {'White' if board.getTurn() == 1 else 'Black'} wins!")
+                    break
                 
         elif step == '0':
             sys.exit()

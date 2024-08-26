@@ -7,6 +7,7 @@ class Board:
         self.turn = 0
         self.blackCapture = []
         self.whiteCapture = []
+        self.checkMate = False
 
     def init(self):
         self.board[0][0] = Rook((0, 0), 'White')
@@ -56,7 +57,7 @@ class Board:
                     piece = self.board[row][col]
                     return piece
                 
-        return
+        return None
     
     def updateMove(self, piece, newMove):
         oldPosition = piece.getPosition()
@@ -86,18 +87,18 @@ class Board:
         if turn:
             print("Black King")
             king = self.getPieceByName("King Black")
-            color = "White"
+            color = "Black"
         elif not turn:
             print("White King")
             king = self.getPieceByName("King White")
-            color = "Black"
+            color = "White"
         else:
             raise ValueError("Invalid turn value!")
 
         if king is None:
             raise ValueError(f"King not found on the board!")
         
-        positionKing = king.position
+        positionKing = king.getPosition()
 
         print(positionKing)
 
@@ -105,9 +106,50 @@ class Board:
             for col in range(8):
                 piece = self.board[row][col]
                 
-                if piece and piece.color == color:
+                if piece and piece.color != color:
                     if piece.isPossibleMove(self.board, positionKing):
                         return True
                 
         return False
     
+
+    def checkmate(self):
+        turn = self.getTurn()
+
+        if turn:
+            print("Black King")
+            king = self.getPieceByName("King Black")
+            color = "Black"
+        elif not turn:
+            print("White King")
+            king = self.getPieceByName("King White")
+            color = "White"
+        else:
+            raise ValueError("Invalid turn value!")
+
+        if king is None:
+            raise ValueError(f"King not found on the board!")
+        
+        positionKing = king.getPosition()
+
+        if not self.check():
+            return False
+        
+        for row in range(8):
+            for col in range(8):
+                piece = self.board[col][row]
+                if piece and piece.color == color:
+                    possibleMoves = piece.getAllPossibleMoves(piece)
+                    for move in possibleMoves:
+                        print(move)
+                        old_position = piece.getPosition()
+                        self.updateMove(piece, move)
+
+                        if not self.check():
+                            self.updateMove(piece, old_position)
+                            return False
+                        
+                        self.updateMove(piece, old_position)
+
+        self.board.checkMate = True
+        return True

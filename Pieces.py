@@ -22,26 +22,39 @@ class Piece(object):
         if startX == endX:
             stepY = 1 if startY < endY else -1
             for y in range(startY + stepY, endY, stepY):
-                if board.getPiece([startX, y]) != 0:
+                if board.getPiece([startX, y]) is not None:
                     print("Path not clear.")
-
                     return False
         elif startY == endY:
             stepX = 1 if startX < endX else -1
             for x in range(startX + stepX, endX, stepX):
-                if board.getPiece([x, startY]) != 0:
+                if board.getPiece([x, startY]) is not None:
                     print("Path not clear.")
                     return False
         elif abs(startY - endY) == abs(startX - endX):
             stepY = 1 if startY < endY else -1
             stepX = 1 if startX < endX else -1
-            for i in range(1, abs(startY - endY)):
-                if board.getPiece([(startX + i * stepX), (startY + i * stepY)]) != 0:
+            currentY, currentX = startY + stepY, startX + stepX
+            while currentY != endY and currentX != endX:
+                if board.getPiece([currentX, currentY]) is not None:
                     print("Path not clear.")
-                    
                     return False
+                currentY += stepY
+                currentX += stepX
+        else:
+            return False
+
         print("Path clear")
         return True
+
+    def getAllPossibleMoves(self, piece):
+        possibleMoves = []
+        for y in range(8):
+            for x in range(8):
+                if piece.isPossibleMove(self,(y,x)):
+                    possibleMoves.append((x,y))
+
+        return possibleMoves
 
 class Pawn(Piece):
     def __init__(self, position, color):
@@ -138,9 +151,9 @@ class Queen(Piece):
     def isPossibleMove(self, board, positions):
         y, x = self.position
         newY, newX = positions
-
+        
         if newX == x or newY == y or abs(newX - x) == abs(newY - y):
-            if self.isPathClear(board, [y,x], [newY, newX]):
+            if self.isPathClear(board, [y, x], [newY, newX]):
                 return True
             
         return False
@@ -152,7 +165,7 @@ class King(Piece):
     def __str__(self) -> str:
         return 'King ' + super().__str__()
     
-    def isPossibleMove(self, positions):
+    def isPossibleMove(self, board, positions):
         y, x = self.position
         newY, newX = positions
 
