@@ -11,26 +11,26 @@ class Board:
 
     def init(self):
         self.board[0][0] = Rook((0, 0), 'White')
-        self.board[0][1] = Knight((0, 1), 'White')
-        self.board[0][2] = Bishop((0, 2), 'White')
-        self.board[0][3] = Queen((0, 3), 'White')
-        self.board[0][4] = King((0, 4), 'White')
-        self.board[0][5] = Bishop((0, 5), 'White')
-        self.board[0][6] = Knight((0, 6), 'White')
-        self.board[0][7] = Rook((0, 7), 'White')
+        self.board[1][0] = Knight((1, 0), 'White')
+        self.board[2][0] = Bishop((1, 0), 'White')
+        self.board[3][0] = Queen((3, 0), 'White')
+        self.board[4][0] = King((4, 0), 'White')
+        self.board[5][0] = Bishop((5, 0), 'White')
+        self.board[6][0] = Knight((6, 0), 'White')
+        self.board[7][0] = Rook((7, 0), 'White')
 
-        self.board[7][0] = Rook((7, 0), 'Black')
-        self.board[7][1] = Knight((7, 1), 'Black')
-        self.board[7][2] = Bishop((7, 2), 'Black')
-        self.board[7][3] = Queen((7, 3), 'Black')
-        self.board[7][4] = King((7, 4), 'Black')
-        self.board[7][5] = Bishop((7, 5), 'Black')
-        self.board[7][6] = Knight((7, 6), 'Black')
+        self.board[0][7] = Rook((0, 7), 'Black')
+        self.board[1][7] = Knight((1, 7), 'Black')
+        self.board[2][7] = Bishop((2, 7), 'Black')
+        self.board[3][7] = Queen((3, 7), 'Black')
+        self.board[4][7] = King((4, 7), 'Black')
+        self.board[5][7] = Bishop((5, 7), 'Black')
+        self.board[6][7] = Knight((6, 7), 'Black')
         self.board[7][7] = Rook((7, 7), 'Black')
 
         for col in range(8):
-            self.board[1][col] = Pawn((1, col), 'White')
-            self.board[6][col] = Pawn((6, col), 'Black')
+            self.board[col][1] = Pawn((col, 1), 'White')
+            self.board[col][6] = Pawn((col, 6), 'Black')
 
     # White Turn = 0
     # Black Turn = 1
@@ -45,7 +45,6 @@ class Board:
         x = coordinates[0]
         piece = self.board[int(x)][int(y)]
         if piece != None:
-            print(piece)
             return piece
 
         return None
@@ -61,13 +60,8 @@ class Board:
     
     def updateMove(self, piece, newMove):
         oldPosition = piece.getPosition()
-        print("Update move board old positon:")
-        print(oldPosition)
         self.board[oldPosition[0]][oldPosition[1]] = 0
         piece.updateMove(newMove)
-        print("Update move board new positon:")
-        
-        print(newMove)
         self.board[newMove[0]][newMove[1]] = piece
 
     def capture(self, piece):
@@ -85,11 +79,9 @@ class Board:
         turn = self.getTurn()
 
         if turn:
-            print("Black King")
             king = self.getPieceByName("King Black")
             color = "Black"
         elif not turn:
-            print("White King")
             king = self.getPieceByName("King White")
             color = "White"
         else:
@@ -104,7 +96,7 @@ class Board:
 
         for row in range(8):
             for col in range(8):
-                piece = self.board[row][col]
+                piece = self.board[col][row]
                 
                 if piece and piece.color != color:
                     if piece.isPossibleMove(self.board, positionKing):
@@ -117,11 +109,9 @@ class Board:
         turn = self.getTurn()
 
         if turn:
-            print("Black King")
             king = self.getPieceByName("King Black")
             color = "Black"
         elif not turn:
-            print("White King")
             king = self.getPieceByName("King White")
             color = "White"
         else:
@@ -141,7 +131,6 @@ class Board:
                 if piece and piece.color == color:
                     possibleMoves = piece.getAllPossibleMoves(piece)
                     for move in possibleMoves:
-                        print(move)
                         old_position = piece.getPosition()
                         self.updateMove(piece, move)
 

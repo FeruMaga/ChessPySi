@@ -11,12 +11,12 @@ def displayGame(board):
     displayCapture(board)
 
     print("  -----------------")
-    for i in range(8):
-        row_str = str(8 - i) + " |"
-        for j in range(8):
-            piece = board.board[7 - i][j]
+    for y in range(7, -1, -1):
+        row_str = str(y + 1) + " |"
+        for x in range(8):
+            piece = board.board[x][y]
             if piece == 0:
-                if (i + j) % 2 == 0:
+                if (x + y) % 2 == 0:
                     row_str += "_|"
                 else:
                     row_str += "#|"
@@ -114,8 +114,8 @@ def translateLetter(steps):
         try:
             if currentStateLetter < 8 and  currentStateNumber < 8 and newMoveLetter < 8 and newMoveNumber < 8:
                 newcoordinates = [
-                    currentStateNumber,currentStateLetter,
-                    newMoveNumber,newMoveLetter
+                    currentStateLetter,currentStateNumber,
+                    newMoveLetter,newMoveNumber
                 ]
                 return newcoordinates
             else:
@@ -190,7 +190,6 @@ def game():
             stepsTranslated = translateLetter(steps)
             if stepsTranslated:
                 move(board, stepsTranslated)
-                displayGame(board)
 
                 if board.checkmate():
                     print(f"Checkmate! {'White' if board.getTurn() == 1 else 'Black'} wins!")
