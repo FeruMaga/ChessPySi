@@ -130,11 +130,11 @@ def move(board, steps):
     currentState = steps[0:2]
     newMove = steps[2:4]
     piece = board.getPiece(currentState)
-    if board.getTurn() == 1 and piece.color == "White" or board.getTurn( ) == 0 and piece.color == "Black":
+    if board.getTurn() and piece.color == "White" or not board.getTurn( ) and piece.color == "Black":
             print("It is not your turn!")
             return
     else:
-        if piece.possibleMove(newMove):
+        if piece.isPossibleMove(board, newMove):
             pieceCapture = board.getPiece(newMove)
             if pieceCapture:
                 board.capture(pieceCapture)
@@ -164,9 +164,6 @@ def game():
             print("White Turn!\n")
         else:
             print("Black Turn!\n")
-
-        if board.check():
-            print("Check !")
 
         displayGame(board)
         

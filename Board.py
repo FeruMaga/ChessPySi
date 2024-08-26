@@ -83,10 +83,12 @@ class Board:
 
         turn = self.getTurn()
 
-        if turn == 1:
+        if turn:
+            print("Black King")
             king = self.getPieceByName("King Black")
             color = "White"
-        elif turn == 0:
+        elif not turn:
+            print("White King")
             king = self.getPieceByName("King White")
             color = "Black"
         else:
@@ -104,7 +106,7 @@ class Board:
                 piece = self.board[row][col]
                 
                 if piece and piece.color == color:
-                    if piece.possibleMove(positionKing):
+                    if piece.isPossibleMove(self.board, positionKing):
                         return True
                 
         return False
