@@ -104,6 +104,7 @@ def clean():
 
 
 def translateLetter(steps):
+    clean()
     if len(steps) == 2 and steps[0][1].isnumeric() and steps[1][1].isnumeric() and steps[0][0].isalpha() and steps[1][0].isalpha():
         currentLetterLower =  steps[0][0].lower()
         newMoveLetterLower = steps[1][0].lower()
@@ -127,6 +128,7 @@ def translateLetter(steps):
         
 
 def move(board, steps):
+    clean()
     currentState = steps[0:2]
     newMove = steps[2:4]
     piece = board.getPiece(currentState)
@@ -143,8 +145,6 @@ def move(board, steps):
 
         oldPosition = piece.getPosition()
         pieceCapture = board.getPiece(newMove)
-        print("Peça capturada: ")
-        print(pieceCapture)
         board.updateMove(piece, newMove)
 
         if board.check():
@@ -155,7 +155,7 @@ def move(board, steps):
         
         if pieceCapture:
             board.capture(pieceCapture)
-
+            
         board.nextTurn()
     else:
         print("This is not a possible move, try again.")

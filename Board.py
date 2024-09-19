@@ -67,7 +67,6 @@ class Board:
     def capture(self, piece):
         position = piece.getPosition()
         piece.captured()
-        self.board[position[0]][position[1]] = 0
 
         if piece.color == "White":
             self.blackCapture.append(piece)
@@ -91,8 +90,6 @@ class Board:
             raise ValueError(f"King not found on the board!")
         
         positionKing = king.getPosition()
-
-        print(positionKing)
 
         for row in range(8):
             for col in range(8):

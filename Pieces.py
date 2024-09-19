@@ -13,7 +13,7 @@ class Piece(object):
         self.position = coordinates
 
     def captured(self):
-        self.position = None
+        self.position = 0
 
     def isPathClear(self, board, start, end):
         startX, startY = start
@@ -22,16 +22,12 @@ class Piece(object):
             stepY = 1 if startY < endY else -1
             for y in range(startY + stepY, endY, stepY):
                 if board.getPiece([startX, y]) != 0:
-                    print("Peace que impede: ")
-                    print({board.getPiece([startX, y])})
                     print("Path not clear.")
                     return False
         elif startY == endY:
             stepX = 1 if startX < endX else -1
             for x in range(startX + stepX, endX, stepX):
                 if board.getPiece([x, startY]) != 0:
-                    print("Peace que impede: ")
-                    print({board.getPiece([x, startY])})
                     print("Path not clear.")
                     return False
         elif abs(startY - endY) == abs(startX - endX):
@@ -40,8 +36,6 @@ class Piece(object):
             currentX, currentY = startX + stepX, startY + stepY
             while currentX != endX and currentY != endY:
                 if board.getPiece([currentX, currentY]) != 0:
-                    print("Peace que impede: ")
-                    print({board.getPiece([currentX, currentY])})
                     print("Path not clear.")
                     return False
                 currentY += stepY
@@ -86,7 +80,7 @@ class Pawn(Piece):
         elif self.color == 'Black':
             if newY == y and newX == x - 1:
                 return True
-            elif newY == y and newX == x - 2 and x == 1:
+            elif newY == y and newX == x - 2 and x == 6:
                 return True
             elif abs(newY - y) == 1 and newX == x - 1 and board.getPiece(positions):
                 return True
