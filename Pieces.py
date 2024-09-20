@@ -20,14 +20,17 @@ class Piece(object):
         endX, endY = end
         if startX == endX:
             stepY = 1 if startY < endY else -1
-            for y in range(startY + stepY, endY, stepY):
-                if board.getPiece([startX, y]) != 0:
+            for y in range(startY + stepY, endY + stepY, stepY):
+                print('y:')
+                print(y)
+                piece = board.getPiece((startX, y))
+                if board.getPiece((startX, y)) != 0:
                     print("Path not clear.")
                     return False
         elif startY == endY:
             stepX = 1 if startX < endX else -1
-            for x in range(startX + stepX, endX, stepX):
-                if board.getPiece([x, startY]) != 0:
+            for x in range(startX + stepX, endX + stepX, stepX):
+                if board.getPiece((x, startY)) != 0:
                     print("Path not clear.")
                     return False
         elif abs(startY - endY) == abs(startX - endX):
@@ -35,7 +38,7 @@ class Piece(object):
             stepY = 1 if startY < endY else -1
             currentX, currentY = startX + stepX, startY + stepY
             while currentX != endX and currentY != endY:
-                if board.getPiece([currentX, currentY]) != 0:
+                if board.getPiece((currentX, currentY)) != 0:
                     print("Path not clear.")
                     return False
                 currentY += stepY
@@ -46,16 +49,13 @@ class Piece(object):
         print("Path clear")
         return True
 
-    def getAllPossibleMoves(self, piece):
+    def getAllPossibleMoves(self, board):
         possibleMoves = []
-        print("Posicao possivel: ")
-        print(piece.__str__())
         for x in range(8):
             for y in range(8):
-                if piece.isPossibleMove(self,(x, y)):
-                    print((x, y))
-                    possibleMoves.append((x, y))
-
+                if (x, y) != self.getPosition():
+                    if self.isPossibleMove(board,(x, y)):
+                        possibleMoves.append((x, y))
 
         return possibleMoves
 
@@ -69,22 +69,23 @@ class Pawn(Piece):
     def isPossibleMove(self, board, positions):
         x, y = self.position
         newX, newY = positions
-        if self.color == 'White':
-            if newY == y and newX == x + 1:
-                return True
-            elif newY == y and newX == x + 2 and x == 1:
-                return True
-            elif abs(newY - y) == 1 and newX == x + 1 and board.getPiece(positions):
-                return True
+        if self.isPathClear(board,(x,y), (newX, newY)):
+            if self.color == 'White':
+                if newY == y and newX == x + 1:
+                    return True
+                elif newY == y and newX == x + 2 and x == 1:
+                    return True
+                elif abs(newY - y) == 1 and newX == x + 1 and board.getPiece(positions):
+                    return True
 
-        elif self.color == 'Black':
-            if newY == y and newX == x - 1:
-                return True
-            elif newY == y and newX == x - 2 and x == 6:
-                return True
-            elif abs(newY - y) == 1 and newX == x - 1 and board.getPiece(positions):
-                return True
-            
+            elif self.color == 'Black':
+                if newY == y and newX == x - 1:
+                    return True
+                elif newY == y and newX == x - 2 and x == 6:
+                    return True
+                elif abs(newY - y) == 1 and newX == x - 1 and board.getPiece(positions):
+                    return True
+                
         return False
 
     
@@ -100,7 +101,7 @@ class Rook(Piece):
         newX, newY = positions
 
         if newX == x or newY == y:
-            if self.isPathClear(board, [x,y], [newX, newY]):
+            if self.isPathClear(board,(x,y), (newX, newY)):
                 return True
 
         return False
@@ -116,11 +117,12 @@ class Knight(Piece):
         x, y = self.position
         newX, newY = positions
 
-        if (newX == x + 1 and newY == y + 2) or (newX == x + 1 and newY == y - 2) \
-        or (newX == x -1 and newY == y + 2) or (newX == x - 1 and newY == y - 2) \
-        or(newX == x+2 and newY == y+1) or (newX == x+2 and newY==y-1) \
-        or(newX == x - 2 and newY == y+1) or (newX == x-2 and newY==y-1):
-            return True
+        if self.isPathClear(board,(x,y), (newX, newY)):
+            if (newX == x + 1 and newY == y + 2) or (newX == x + 1 and newY == y - 2) \
+            or (newX == x -1 and newY == y + 2) or (newX == x - 1 and newY == y - 2) \
+            or(newX == x+2 and newY == y+1) or (newX == x+2 and newY==y-1) \
+            or(newX == x - 2 and newY == y+1) or (newX == x-2 and newY==y-1):
+                return True
             
         return False
     
@@ -138,7 +140,7 @@ class Bishop(Piece):
         dx = abs(newX - x)
         dy = abs(newY - y)
         if (dx == dy):
-            if self.isPathClear(board, [x, y], [newX, newY]):
+            if self.isPathClear(board,(x,y), (newX, newY)):
                 return True
 
 
@@ -157,7 +159,7 @@ class Queen(Piece):
         dx = abs(newX - x)
         dy = abs(newY - y)
         if newX == x or newY == y or (dx == dy):
-            if self.isPathClear(board, [x, y], [newX, newY]):
+            if self.isPathClear(board,(x,y), (newX, newY)):
                 return True
             
         return False
@@ -173,7 +175,8 @@ class King(Piece):
         x, y = self.position
         newX, newY = positions
 
-        if newX == x + 1 or newY == y + 1 or newX == x - 1 or newY == y - 1 or abs(newX - x) == abs(newY - y):
-            return True
+        if (newY - y == 1) or (newX - x == 1) or (abs(newX - x) == 1 and abs(newY - y)):
+            if self.isPathClear(board, (x,y), (newX, newY)):
+                return True
             
         return False

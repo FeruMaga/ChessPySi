@@ -1,5 +1,4 @@
 from Board import *
-from Pieces import *
 
 import sys
 import os
@@ -7,7 +6,6 @@ import re
 
 
 def displayGame(board):
-
     displayCapture(board)
 
     print("  -----------------")
@@ -32,61 +30,62 @@ def displayGame(board):
                 elif piece.__str__() == 'Knight White':
                     row_str += "♞|"
                 elif piece.__str__() == 'Knight Black':
-                    row_str += "♘|"    
+                    row_str += "♘|"
                 elif piece.__str__() == 'Bishop White':
                     row_str += "♝|"
                 elif piece.__str__() == 'Bishop Black':
-                    row_str += "♗|"    
+                    row_str += "♗|"
                 elif piece.__str__() == 'Queen White':
                     row_str += "♛|"
                 elif piece.__str__() == 'Queen Black':
-                    row_str += "♕|"    
+                    row_str += "♕|"
                 elif piece.__str__() == 'King White':
                     row_str += "♚|"
                 elif piece.__str__() == 'King Black':
-                    row_str += "♔|"    
+                    row_str += "♔|"
         print(row_str)
     print("  ----------------")
     print("   a b c d e f g h")
 
+
 def displayCapture(board):
-        rowWhitePiece = ""
-        rowBlackPiece = ""
+    rowWhitePiece = ""
+    rowBlackPiece = ""
 
-        if board.blackCapture or board.whiteCapture:
-            print("White captures: ")
-            if board.whiteCapture:
-                for piece in board.whiteCapture:
-                    if piece.__str__() == 'Pawn Black':
-                        rowBlackPiece += " ♙"
-                    elif piece.__str__() == 'Rook Black':
-                        rowBlackPiece += " ♖"
-                    elif piece.__str__() == 'Knight Black':
-                        rowBlackPiece += " ♘"    
-                    elif piece.__str__() == 'Bishop Black':
-                        rowBlackPiece += " ♗"    
-                    elif piece.__str__() == 'Queen Black':
-                        rowBlackPiece += " ♕"    
-                    elif piece.__str__() == 'King Black':
-                        rowBlackPiece += " ♔"    
-            print(rowBlackPiece)
-            print("Black captures: ")
-            if board.blackCapture:
-                for piece in board.blackCapture:
-                    if piece.__str__() == 'Pawn White':
-                        rowWhitePiece += "♟|"
-                    elif piece.__str__() == 'Rook White':
-                        rowWhitePiece += "♜|"
-                    elif piece.__str__() == 'Knight White':
-                        rowWhitePiece += "♞|"
-                    elif piece.__str__() == 'Bishop White':
-                        rowWhitePiece += "♝|"  
-                    elif piece.__str__() == 'Queen White':
-                        rowWhitePiece += "♛|"
-                    elif piece.__str__() == 'King White':
-                        rowWhitePiece += "♚|"
+    if board.blackCapture or board.whiteCapture:
+        print("White captures: ")
+        if board.whiteCapture:
+            for piece in board.whiteCapture:
+                if piece.__str__() == 'Pawn Black':
+                    rowBlackPiece += " ♙"
+                elif piece.__str__() == 'Rook Black':
+                    rowBlackPiece += " ♖"
+                elif piece.__str__() == 'Knight Black':
+                    rowBlackPiece += " ♘"
+                elif piece.__str__() == 'Bishop Black':
+                    rowBlackPiece += " ♗"
+                elif piece.__str__() == 'Queen Black':
+                    rowBlackPiece += " ♕"
+                elif piece.__str__() == 'King Black':
+                    rowBlackPiece += " ♔"
+        print(rowBlackPiece)
+        print("Black captures: ")
+        if board.blackCapture:
+            for piece in board.blackCapture:
+                if piece.__str__() == 'Pawn White':
+                    rowWhitePiece += "♟|"
+                elif piece.__str__() == 'Rook White':
+                    rowWhitePiece += "♜|"
+                elif piece.__str__() == 'Knight White':
+                    rowWhitePiece += "♞|"
+                elif piece.__str__() == 'Bishop White':
+                    rowWhitePiece += "♝|"
+                elif piece.__str__() == 'Queen White':
+                    rowWhitePiece += "♛|"
+                elif piece.__str__() == 'King White':
+                    rowWhitePiece += "♚|"
 
-            print(rowWhitePiece)
+        print(rowWhitePiece)
 
 
 def clean():
@@ -104,16 +103,16 @@ def clean():
 
 
 def translateLetter(steps):
-    clean()
-    if len(steps) == 2 and steps[0][1].isnumeric() and steps[1][1].isnumeric() and steps[0][0].isalpha() and steps[1][0].isalpha():
-        currentLetterLower =  steps[0][0].lower()
+    if len(steps) == 2 and steps[0][1].isnumeric() and steps[1][1].isnumeric() and steps[0][0].isalpha() and steps[1][
+        0].isalpha():
+        currentLetterLower = steps[0][0].lower()
         newMoveLetterLower = steps[1][0].lower()
         currentStateLetter = int(ord(currentLetterLower) - 96) - 1
-        currentStateNumber = int(steps[0][1]) - 1 
-        newMoveLetter =  int(ord(newMoveLetterLower) - 96) - 1
-        newMoveNumber = int(steps[1][1]) -1
+        currentStateNumber = int(steps[0][1]) - 1
+        newMoveLetter = int(ord(newMoveLetterLower) - 96) - 1
+        newMoveNumber = int(steps[1][1]) - 1
         try:
-            if currentStateLetter < 8 and  currentStateNumber < 8 and newMoveLetter < 8 and newMoveNumber < 8:
+            if currentStateLetter < 8 and currentStateNumber < 8 and newMoveLetter < 8 and newMoveNumber < 8:
                 newcoordinates = [
                     currentStateNumber, currentStateLetter,
                     newMoveNumber, newMoveLetter
@@ -123,43 +122,50 @@ def translateLetter(steps):
                 print("Coordinates out of range, please provide valid coordinates.")
         except IndexError:
             print("Please provide valid coordinates.")
-    else:   
+    else:
         print("Coordinates not recognized, try again.")
-        
+
 
 def move(board, steps):
-    clean()
     currentState = steps[0:2]
     newMove = steps[2:4]
     piece = board.getPiece(currentState)
 
     if not piece:
         print("No piece choosed!")
-        return 
-    
-    if board.getTurn() and piece.color == "White" or not board.getTurn( ) and piece.color == "Black":
-            print("It is not your turn!")
-            return
-    
+        return
+
+    if board.getTurn() and piece.color == "White" or not board.getTurn() and piece.color == "Black":
+        print("It is not your turn!")
+        return
+
     if piece.isPossibleMove(board, newMove):
 
         oldPosition = piece.getPosition()
         pieceCapture = board.getPiece(newMove)
-        board.updateMove(piece, newMove)
+
+        print(f"Piece: {piece}")
 
         if board.check():
             print("Move results in check!")
-            board.updateMove(piece, oldPosition)
             return
-        
-        
+
+        board.updateMove(piece, newMove)
+
         if pieceCapture:
-            board.capture(pieceCapture)
-            
+            if board.capture(pieceCapture):
+                print("Piece captured!")
+            else:
+                board.updateMove(piece, oldPosition)
+                board.updateMove(pieceCapture, newMove)
+                print("Cannot capture your same color piece.")
+                return
+
         board.nextTurn()
     else:
         print("This is not a possible move, try again.")
         return
+
 
 def GameOver(board):
     if board.checkMate:
@@ -168,14 +174,11 @@ def GameOver(board):
         return False
 
 
-
 def game():
-    steps = []
     board = Board()
     print("Write the coordenates of your piece, then the coordenates for where it would be. \nExample: e2 e4")
     print("If want to exit, write 0.")
-    
-    turn = 0
+
     while not GameOver(board):
 
         if board.getTurn() == 0:
@@ -184,11 +187,11 @@ def game():
             print("Black Turn!\n")
 
         displayGame(board)
-        
+
         step = input()
-        steps = re.findall(r"[\w]+", step)
-        
-        if(len(steps) == 2):
+        steps = re.findall(r"\w+", step)
+
+        if len(steps) == 2:
             stepsTranslated = translateLetter(steps)
             if stepsTranslated:
                 move(board, stepsTranslated)
@@ -196,16 +199,15 @@ def game():
                 if board.checkmate():
                     print(f"Checkmate! {'White' if board.getTurn() == 1 else 'Black'} wins!")
                     break
-                
+
         elif step == '0':
             sys.exit()
         else:
             print("Coordenates not recognized, try again.")
             displayGame(board=board)
-        
 
 
-def main(): 
+def main():
     print("                       Welcome ChessPy")
     print(r"""
                                                         _:_
@@ -245,13 +247,9 @@ def main():
             break
         elif choose == "0":
             sys.exit()
-        else: 
+        else:
             print("\nThis option does not exist, try again.\n")
-
-
 
 
 if __name__ == '__main__':
     main()
-
-
