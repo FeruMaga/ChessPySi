@@ -34,10 +34,10 @@ class Board:
             self.board[6][col] = Pawn((6, col), 'Black')
 
         # Teste - Checkmate rápido
-        self.updateMove(self.board[1][5], (2,5)) # f2 f3
-        self.updateMove(self.board[6][4], (4,4)) # e7 e5
-        self.updateMove(self.board[1][6], (3,6)) # g2 g4
-        self.nextTurn()
+        #self.updateMove(self.board[1][5], (2,5)) # f2 f3
+        #self.updateMove(self.board[6][4], (4,4)) # e7 e5
+        #self.updateMove(self.board[1][6], (3,6)) # g2 g4
+        #self.nextTurn()
         #self.updateMove(self.board[7][3], (3,7)) # d8 h4
         
 
@@ -90,9 +90,7 @@ class Board:
 
         return True
 
-    def kingTurn(self):
-        turn = self.getTurn()
-
+    def kingTurn(self, turn):
         if turn:
             king = self.getPieceByName("King Black")
             color = "Black"
@@ -106,44 +104,37 @@ class Board:
 
         if king == 0:
             raise ValueError(f"King not found on the board!")
-        
 
-    def check(self):
-        king = self.kingTurn()
+    def check(self, turn):
+        king = self.kingTurn(turn)
         kingPosition = king.getPosition()
-
-        print(f"King turno check: {king}")
 
         for row in range(8):
             for col in range(8):
                 piece = self.getPiece((row, col))
                 if piece != 0 and piece.color != king.color:
                     if piece.isPossibleMove(self, kingPosition):
-                        print(f"Piece {piece} is checking the king {king.color}.")
                         return True
         return False
     
 
-    def checkmate(self):
-        king = self.kingTurn()
+    def checkmate(self, turn):
+        if not self.check(1 - turn):
+            return False
+
+        king = self.kingTurn(1 - turn)
         kingPosition = king.getPosition()
 
-        print(f"King turno check: {king}")
-
-        if not self.check():
-            return False
-        
         board_copy = deepcopy(self)
 
         possible_moves = king.getAllPossibleMoves(self)
 
-        print(f"Piece Moves: {possible_moves}")
-
         for move in possible_moves:
             board_copy = deepcopy(self)
             board_copy.updateMove(king, move)
-            if not board_copy.check():
+            if not board_copy.check(1 - turn):
                 return False
+            board_copy.updateMove(king, kingPosition)
 
         for row in range(8):
             for col in range(8):
@@ -155,7 +146,7 @@ class Board:
                         board_copy = deepcopy(self)
                         board_copy.updateMove(piece, move)
                         
-                        if not board_copy.check():
+                        if not board_copy.check(1 - turn):
                             return False
 
         return True

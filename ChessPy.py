@@ -144,13 +144,12 @@ def move(board, steps):
         oldPosition = piece.getPosition()
         pieceCapture = board.getPiece(newMove)
 
-        print(f"Piece: {piece}")
-
-        if board.check():
-            print("Move results in check!")
-            return
-
         board.updateMove(piece, newMove)
+
+        king = board.kingTurn(board.getTurn())
+
+        if board.check(board.getTurn()):
+            print(f"Piece {piece} is checking the king {king.color}.")
 
         if pieceCapture:
             if board.capture(pieceCapture):
@@ -196,7 +195,7 @@ def game():
             if stepsTranslated:
                 move(board, stepsTranslated)
 
-                if board.checkmate():
+                if board.checkmate(1 - board.getTurn()):
                     print(f"Checkmate! {'White' if board.getTurn() == 1 else 'Black'} wins!")
                     break
 
