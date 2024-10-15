@@ -1,5 +1,5 @@
 from Board import *
-
+from gamePanel import *
 import sys
 import os
 import re
@@ -205,6 +205,12 @@ def game():
             print("Coordenates not recognized, try again.")
             displayGame(board=board)
 
+def gameDisplayMode():
+    display = gameDisplay();
+    display.initGameDisplay()
+    display.show_start_screen()
+    
+
 
 def main():
     print("                       Welcome ChessPy")
@@ -230,6 +236,7 @@ def main():
         print("Choose the type of game:")
         print("Player vs Player [1]")
         print("Player vs AI [2]")
+        print("Display [3]")
         print("Exit [0]")
 
         choose = input()
@@ -243,6 +250,10 @@ def main():
             print("Player vs AI choosed!")
             clean()
             game()
+            break
+        elif choose == "3":
+            print("Display mode!")
+            gameDisplayMode()
             break
         elif choose == "0":
             sys.exit()
