@@ -205,8 +205,10 @@ def game():
             print("Coordenates not recognized, try again.")
             displayGame(board=board)
 
+
 def gameDisplayMode():
-    display = gameDisplay();
+    board = Board()
+    display = gameDisplay(board=board);
     display.initGameDisplay()
     display.show_start_screen()
     
